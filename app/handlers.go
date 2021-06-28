@@ -3,7 +3,7 @@ package app
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
+	"github.com/mowamed/banking/service"
 	"log"
 	"net/http"
 )
@@ -14,16 +14,13 @@ type Customer struct {
 	Zipcode string `json:"zip_code" xml:"zipcode"`
 }
 
-func greet(w http.ResponseWriter, request *http.Request) {
-	log.Println(fmt.Fprint(w, "hello world!"))
+type CustomerHandlers struct {
+	service service.CustomerService
 }
 
-func getAllCustomers(w http.ResponseWriter, request *http.Request) {
-	customers := []Customer{
-		{"Mohamed Bakus", "Accra", "00225"},
-		{"Dexter Ouatt", "Accra", "00225"},
-		{"Momo bak", "Accra", "00225"},
-	}
+func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, request *http.Request) {
+
+	customers, _ := ch.service.GetAllCustomer()
 
 	if request.Header.Get("Content-type") == "application/xml" {
 		w.Header().Add("Content-type", "application/xml")
