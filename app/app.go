@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"time"
 )
 
 func Start() {
@@ -16,7 +17,14 @@ func Start() {
 
 	router.HandleFunc("/customers/{customer_id:[0-9]+}", getCustomer)
 
-	log.Fatal(http.ListenAndServe("localhost:8000", router))
+	srv := &http.Server{
+		Handler:      router,
+		Addr:         "localhost:8000",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
 }
 
 func getCustomer(w http.ResponseWriter, r *http.Request) {
